@@ -18,7 +18,7 @@ function sunburstVis(slice) {
     const visHeight = containerHeight - margin.top - margin.bottom - breadcrumbHeight;
     const radius = Math.min(visWidth, visHeight) / 2;
 
-    const totalSize;
+    let totalSize;
     const vis;
     const arcs;
 
@@ -63,6 +63,7 @@ function sunburstVis(slice) {
         .outerRadius(function (d) { return Math.sqrt(d.y + d.dy); });
 
 
+
     // Main function to draw and set up the visualization, once we have the data.
     function createVisualization(json) {
 
@@ -99,6 +100,14 @@ function sunburstVis(slice) {
       // Get total size of the tree = value of root node from partition.
       totalSize = path.node().__data__.value;
      };
+
+     // Use d3.text and d3.csv.parseRows so that we do not need to have a header
+     // row, and can receive the csv as an array of arrays.
+     d3.text(slice.csvEndpoint(), function (text) {
+       const csv = d3.csv.parseRows(text);
+       const json = buildHierarchy(csv);
+       createVisualization(json);
+     });
 
     // Fade all but the current sequence, and show it in the breadcrumb trail.
     function mouseover(d) {
@@ -320,14 +329,6 @@ function sunburstVis(slice) {
       }
       return root;
     };
-
-    // Use d3.text and d3.csv.parseRows so that we do not need to have a header
-    // row, and can receive the csv as an array of arrays.
-    d3.text(slice.csvEndpoint(), function (text) {
-      const csv = d3.csv.parseRows(text);
-      const json = buildHierarchy(csv);
-      createVisualization(json);
-    });
   };
 
   return {
