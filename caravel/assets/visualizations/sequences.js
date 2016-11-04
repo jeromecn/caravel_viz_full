@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle, no-param-reassign */
 import d3 from 'd3';
-//import { category21 } from '../javascripts/modules/colors';
-//import { wrapSvgText } from '../javascripts/modules/utils';
+
 
 require('./sequences.css');
 
@@ -19,15 +18,9 @@ function sunburstVis(slice) {
     const visHeight = containerHeight - margin.top - margin.bottom - breadcrumbHeight;
     const radius = Math.min(visWidth, visHeight) / 2;
 
-    //let colorByCategory = true; // color by category if primary/secondary metrics match
-    //let maxBreadcrumbs;
-    //let breadcrumbDims; // set based on data
-    let totalSize; // total size of all segments; set after loading the data.
-    //let colorScale;
-    //let breadcrumbs;
+    let totalSize;
     let vis;
-    //let arcs;
-    //let gMiddleText; // dom handles
+
 
     // Dimensions of sunburst.
     const width = visWidth;
@@ -39,22 +32,8 @@ function sunburstVis(slice) {
     };
 
     // Mapping of step names to colors.
-    const colors = {
-      "home": "#5687d1",
-      "product": "#7b615c",
-      "search": "#de783b",
-      "account": "#6ab975",
-      "other": "#a173d1",
-      "end": "#bbbbbb"
-    };
+    const colors = {};
 
-    // <div id="sequence"></div>
-    //       <div id="chart">
-    //         <div id="explanation" style="visibility: hidden;">
-    //           <span id="percentage"></span><br/>
-    //           of visits begin with this sequence of pages
-    //         </div>
-    //       </div>
     const sequenceDiv = container.append("div:div").attr("class","sequence")
     const chartDiv = sequenceDiv.append("div:div").attr("clas","chart")
     const explanationDiv = chartDiv.append("div:div").attr("clas","explanation")
