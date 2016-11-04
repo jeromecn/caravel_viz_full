@@ -18,7 +18,7 @@ function sunburstVis(slice) {
     const visHeight = containerHeight - margin.top - margin.bottom - breadcrumbHeight;
     const radius = Math.min(visWidth, visHeight) / 2;
 
-    let totalSize;
+    const totalSize;
     const vis;
     const arcs;
 
