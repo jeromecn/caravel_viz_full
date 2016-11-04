@@ -24,6 +24,7 @@ const vizMap = {
   sankey: require('./sankey.js'),
   separator: require('./markup.js'),
   sunburst: require('./sunburst.js'),
+  sequences: require('./sequences.js'),
   table: require('./table.js'),
   treemap: require('./treemap.js'),
   word_cloud: require('./word_cloud.js'),

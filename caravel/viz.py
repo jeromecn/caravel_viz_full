@@ -1453,6 +1453,57 @@ class SunburstViz(BaseViz):
             self.form_data['metric'], self.form_data['secondary_metric']]
         return qry
 
+class SequencesViz(BaseViz):
+
+    """A multi level sequences sunburst chart"""
+
+    viz_type = "sequences"
+    verbose_name = _("Sequences")
+    is_timeseries = False
+    credits = (
+        'Kerry Rodden '
+        '@<a href="https://bl.ocks.org/kerryrodden/7090426">bl.ocks.org</a>')
+    fieldsets = ({
+        'label': None,
+        'fields': (
+            'groupby',
+            'metric',
+            'row_limit',
+        )
+    },)
+    form_overrides = {
+        'metric': {
+            'label': _('Primary Metric'),
+            'description': _(
+                "The primary metric is used to "
+                "define the arc segment sizes"),
+        },
+        'groupby': {
+            'label': _('Hierarchy'),
+            'description': _("This defines the level of the hierarchy"),
+        },
+    }
+
+    def get_df(self, query_obj=None):
+        df = super(SequencesViz, self).get_df(query_obj)
+        return df
+
+    def get_data(self):
+        df = self.get_df()
+
+        # if m1 == m2 duplicate the metric column
+        cols = self.form_data.get('groupby')
+        metric = self.form_data.get('metric')
+
+        cols += [self.form_data['metric']]
+        ndf = df[cols]
+
+        return json.loads(ndf.to_json(orient="values"))  # TODO fix this nonsense
+
+    def query_obj(self):
+        qry = super(SequencesViz, self).query_obj()
+        qry['metrics'] = [self.form_data['metric']]
+        return qry
 
 class SankeyViz(BaseViz):
 
@@ -2012,6 +2063,7 @@ viz_types_list = [
     BigNumberViz,
     BigNumberTotalViz,
     SunburstViz,
+    SequencesViz,
     DirectedForceViz,
     SankeyViz,
     WorldMapViz,
