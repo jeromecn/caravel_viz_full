@@ -19,7 +19,8 @@ function sunburstVis(slice) {
     const radius = Math.min(visWidth, visHeight) / 2;
 
     let totalSize;
-    let vis;
+    const vis;
+    const arcs;
 
 
     // Dimensions of sunburst.
@@ -38,6 +39,7 @@ function sunburstVis(slice) {
     const chartDiv = sequenceDiv.append('div:div').attr('clas', 'chart');
     const explanationDiv = chartDiv.append('div:div').attr('clas', 'explanation');
     const percentageSPAN = explanationDiv.append('span:span').attr('clas', 'percentage');
+    percentageSPAN.text('');
 
 
     // Total size of all segments; we set this later, after loading the data.
@@ -60,13 +62,6 @@ function sunburstVis(slice) {
         .innerRadius(function (d) { return Math.sqrt(d.y); })
         .outerRadius(function (d) { return Math.sqrt(d.y + d.dy); });
 
-    // Use d3.text and d3.csv.parseRows so that we do not need to have a header
-    // row, and can receive the csv as an array of arrays.
-    d3.text(slice.csvEndpoint(), function (text) {
-      const csv = d3.csv.parseRows(text);
-      const json = buildHierarchy(csv);
-      createVisualization(json);
-    });
 
     // Main function to draw and set up the visualization, once we have the data.
     function createVisualization(json) {
@@ -325,6 +320,14 @@ function sunburstVis(slice) {
       }
       return root;
     };
+
+    // Use d3.text and d3.csv.parseRows so that we do not need to have a header
+    // row, and can receive the csv as an array of arrays.
+    d3.text(slice.csvEndpoint(), function (text) {
+      const csv = d3.csv.parseRows(text);
+      const json = buildHierarchy(csv);
+      createVisualization(json);
+    });
   };
 
   return {
