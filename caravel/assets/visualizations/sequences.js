@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, no-param-reassign */
 import d3 from 'd3';
-import { category21 } from '../javascripts/modules/colors';
-import { wrapSvgText } from '../javascripts/modules/utils';
+//import { category21 } from '../javascripts/modules/colors';
+//import { wrapSvgText } from '../javascripts/modules/utils';
 
 require('./sequences.css');
 
@@ -19,21 +19,19 @@ function sunburstVis(slice) {
     const visHeight = containerHeight - margin.top - margin.bottom - breadcrumbHeight;
     const radius = Math.min(visWidth, visHeight) / 2;
 
-    let colorByCategory = true; // color by category if primary/secondary metrics match
-    let maxBreadcrumbs;
-    let breadcrumbDims; // set based on data
+    //let colorByCategory = true; // color by category if primary/secondary metrics match
+    //let maxBreadcrumbs;
+    //let breadcrumbDims; // set based on data
     let totalSize; // total size of all segments; set after loading the data.
-    let colorScale;
-    let breadcrumbs;
+    //let colorScale;
+    //let breadcrumbs;
     let vis;
-    let arcs;
-    let gMiddleText; // dom handles
+    //let arcs;
+    //let gMiddleText; // dom handles
 
     // Dimensions of sunburst.
     const width = visWidth;
     const height = visHeight;
-    
-    //const radius = Math.min(width, height) / 2;
 
     // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
     const b = {
@@ -41,7 +39,7 @@ function sunburstVis(slice) {
     };
 
     // Mapping of step names to colors.
-    var colors = {
+    const colors = {
       "home": "#5687d1",
       "product": "#7b615c",
       "search": "#de783b",
@@ -86,8 +84,8 @@ function sunburstVis(slice) {
     // Use d3.text and d3.csv.parseRows so that we do not need to have a header
     // row, and can receive the csv as an array of arrays.
     d3.text(slice.csvEndpoint(), function(text) {
-      var csv = d3.csv.parseRows(text);
-      var json = buildHierarchy(csv);
+      const csv = d3.csv.parseRows(text);
+      const json = buildHierarchy(csv);
       createVisualization(json);
     });
 
@@ -106,12 +104,12 @@ function sunburstVis(slice) {
           .style("opacity", 0);
 
       // For efficiency, filter nodes to keep only those large enough to see.
-      var nodes = partition.nodes(json)
+      const nodes = partition.nodes(json)
           .filter(function(d) {
           return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
           });
 
-      var path = vis.data([json]).selectAll("path")
+      const path = vis.data([json]).selectAll("path")
           .data(nodes)
           .enter().append("svg:path")
           .attr("display", function(d) { return d.depth ? null : "none"; })
@@ -131,8 +129,8 @@ function sunburstVis(slice) {
     // Fade all but the current sequence, and show it in the breadcrumb trail.
     function mouseover(d) {
 
-      var percentage = (100 * d.value / totalSize).toPrecision(3);
-      var percentageString = percentage + "%";
+      const percentage = (100 * d.value / totalSize).toPrecision(3);
+      const percentageString = percentage + "%";
       if (percentage < 0.1) {
         percentageString = "< 0.1%";
       }
@@ -143,7 +141,7 @@ function sunburstVis(slice) {
       d3.select(".explanation")
           .style("visibility", "");
 
-      var sequenceArray = getAncestors(d);
+      const sequenceArray = getAncestors(d);
       updateBreadcrumbs(sequenceArray, percentageString);
 
       // Fade all the segments.
@@ -184,8 +182,8 @@ function sunburstVis(slice) {
     // Given a node in a partition layout, return an array of all of its ancestor
     // nodes, highest first, but excluding the root.
     function getAncestors(node) {
-      var path = [];
-      var current = node;
+      const path = [];
+      let current = node;
       while (current.parent) {
         path.unshift(current);
         current = current.parent;
@@ -195,7 +193,7 @@ function sunburstVis(slice) {
 
     function initializeBreadcrumbTrail() {
       // Add the svg area.
-      var trail = d3.select(".sequence").append("svg:svg")
+      const trail = d3.select(".sequence").append("svg:svg")
           .attr("width", width)
           .attr("height", 50)
           .attr("class", "trail");
@@ -207,7 +205,7 @@ function sunburstVis(slice) {
 
     // Generate a string that describes the points of a breadcrumb polygon.
     function breadcrumbPoints(d, i) {
-      var points = [];
+      const points = [];
       points.push("0,0");
       points.push(b.w + ",0");
       points.push(b.w + b.t + "," + (b.h / 2));
@@ -223,12 +221,12 @@ function sunburstVis(slice) {
     function updateBreadcrumbs(nodeArray, percentageString) {
 
       // Data join; key function combines name and depth (= position in sequence).
-      var g = d3.select(".trail")
+      const g = d3.select(".trail")
           .selectAll("g")
           .data(nodeArray, function(d) { return d.name + d.depth; });
 
       // Add breadcrumb and label for entering nodes.
-      var entering = g.enter().append("svg:g");
+      const entering = g.enter().append("svg:g");
 
       entering.append("svg:polygon")
           .attr("points", breadcrumbPoints)
@@ -266,15 +264,15 @@ function sunburstVis(slice) {
     function drawLegend() {
 
       // Dimensions of legend item: width, height, spacing, radius of rounded rect.
-      var li = {
+      const li = {
         w: 75, h: 30, s: 3, r: 3
       };
 
-      var legend = d3.select(".legend").append("svg:svg")
+      const legend = d3.select(".legend").append("svg:svg")
           .attr("width", li.w)
           .attr("height", d3.keys(colors).length * (li.h + li.s));
 
-      var g = legend.selectAll("g")
+      const g = legend.selectAll("g")
           .data(d3.entries(colors))
           .enter().append("svg:g")
           .attr("transform", function(d, i) {
@@ -297,7 +295,7 @@ function sunburstVis(slice) {
     }
 
     function toggleLegend() {
-      var legend = d3.select(".legend");
+      const legend = d3.select(".legend");
       if (legend.style("visibility") == "hidden") {
         legend.style("visibility", "");
       } else {
@@ -310,22 +308,22 @@ function sunburstVis(slice) {
     // root to leaf, separated by hyphens. The second column is a count of how
     // often that sequence occurred.
     function buildHierarchy(csv) {
-      var root = {"name": "root", "children": []};
-      for (var i = 0; i < csv.length; i++) {
-        var sequence = csv[i][0];
-        var size = +csv[i][1];
+      const root = {"name": "root", "children": []};
+      for (const i = 0; i < csv.length; i++) {
+        let sequence = csv[i][0];
+        let size = +csv[i][1];
         if (isNaN(size)) { // e.g. if this is a header row
           continue;
         }
-        var parts = sequence.split("-");
-        var currentNode = root;
+        const parts = sequence.split("-");
+        let currentNode = root;
         for (var j = 0; j < parts.length; j++) {
-          var children = currentNode["children"];
-          var nodeName = parts[j];
-          var childNode;
+          let children = currentNode["children"];
+          let nodeName = parts[j];
+          let childNode;
           if (j + 1 < parts.length) {
        // Not yet at the end of the sequence; move down the tree.
-     	var foundChild = false;
+     	const foundChild = false;
      	for (var k = 0; k < children.length; k++) {
      	  if (children[k]["name"] == nodeName) {
      	    childNode = children[k];
