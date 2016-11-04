@@ -28,16 +28,16 @@ function sunburstVis(slice) {
 
     // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
     const b = {
-      w: 75, h: 30, s: 3, t: 10
+      w: 75, h: 30, s: 3, t: 10,
     };
 
     // Mapping of step names to colors.
     const colors = {};
 
-    const sequenceDiv = container.append('div:div').attr('class','sequence')
-    const chartDiv = sequenceDiv.append('div:div').attr('clas','chart')
-    const explanationDiv = chartDiv.append('div:div').attr('clas','explanation')
-    const percentageSPAN = explanationDiv.append('span:span').attr('clas','percentage')
+    const sequenceDiv = container.append('div:div').attr('class', 'sequence');
+    const chartDiv = sequenceDiv.append('div:div').attr('clas', 'chart');
+    const explanationDiv = chartDiv.append('div:div').attr('clas', 'explanation');
+    const percentageSPAN = explanationDiv.append('span:span').attr('clas', 'percentage');
 
 
     // Total size of all segments; we set this later, after loading the data.
@@ -52,17 +52,17 @@ function sunburstVis(slice) {
 
     const partition = d3.layout.partition()
         .size([2 * Math.PI, radius * radius])
-        .value(function(d) { return d.size; });
+        .value(function (d) { return d.size; });
 
     arcs = d3.svg.arc()
-        .startAngle(function(d) { return d.x; })
-        .endAngle(function(d) { return d.x + d.dx; })
-        .innerRadius(function(d) { return Math.sqrt(d.y); })
-        .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+        .startAngle(function (d) { return d.x; })
+        .endAngle(function (d) { return d.x + d.dx; })
+        .innerRadius(function (d) { return Math.sqrt(d.y); })
+        .outerRadius(function (d) { return Math.sqrt(d.y + d.dy); });
 
     // Use d3.text and d3.csv.parseRows so that we do not need to have a header
     // row, and can receive the csv as an array of arrays.
-    d3.text(slice.csvEndpoint(), function(text) {
+    d3.text(slice.csvEndpoint(), function (text) {
       const csv = d3.csv.parseRows(text);
       const json = buildHierarchy(csv);
       createVisualization(json);
@@ -74,7 +74,7 @@ function sunburstVis(slice) {
       // Basic setup of page elements.
       initializeBreadcrumbTrail();
       drawLegend();
-      //d3.select('#togglelegend').on('click', toggleLegend);
+      d3.select('.togglelegend').on('click', toggleLegend);
 
       // Bounding circle underneath the sunburst, to make it easier to detect
       // when the mouse leaves the parent g.
@@ -84,17 +84,17 @@ function sunburstVis(slice) {
 
       // For efficiency, filter nodes to keep only those large enough to see.
       const nodes = partition.nodes(json)
-          .filter(function(d) {
+          .filter(function (d) {
           return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
           });
 
       const path = vis.data([json]).selectAll('path')
           .data(nodes)
           .enter().append('svg:path')
-          .attr('display', function(d) { return d.depth ? null : 'none'; })
+          .attr('display', function (d) { return d.depth ? null : 'none'; })
           .attr('d', arc)
           .attr('fill-rule', 'evenodd')
-          .style('fill', function(d) { return colors[d.name]; })
+          .style('fill', function (d) { return colors[d.name]; })
           .style('opacity', 1)
           .on('mouseover', mouseover);
 
@@ -129,7 +129,7 @@ function sunburstVis(slice) {
 
       // Then highlight only those that are an ancestor of the current segment.
       vis.selectAll('path')
-          .filter(function(node) {
+          .filter(function (node) {
                     return (sequenceArray.indexOf(node) >= 0);
                   })
           .style('opacity', 1);
@@ -150,7 +150,7 @@ function sunburstVis(slice) {
           .transition()
           .duration(1000)
           .style('opacity', 1)
-          .each('end', function() {
+          .each('end', function () {
                   d3.select(this).on('mouseover', mouseover);
                 });
 
@@ -202,24 +202,24 @@ function sunburstVis(slice) {
       // Data join; key function combines name and depth (= position in sequence).
       const g = d3.select('.trail')
           .selectAll('g')
-          .data(nodeArray, function(d) { return d.name + d.depth; });
+          .data(nodeArray, function (d) { return d.name + d.depth; });
 
       // Add breadcrumb and label for entering nodes.
       const entering = g.enter().append('svg:g');
 
       entering.append('svg:polygon')
           .attr('points', breadcrumbPoints)
-          .style('fill', function(d) { return colors[d.name]; });
+          .style('fill', function (d) { return colors[d.name]; });
 
       entering.append('svg:text')
           .attr('x', (b.w + b.t) / 2)
           .attr('y', b.h / 2)
           .attr('dy', '0.35em')
           .attr('text-anchor', 'middle')
-          .text(function(d) { return d.name; });
+          .text(function (d) { return d.name; });
 
       // Set position for entering and updating nodes.
-      g.attr('transform', function(d, i) {
+      g.attr('transform', function (d, i) {
         return 'translate(' + i * (b.w + b.s) + ', 0)';
       });
 
@@ -254,7 +254,7 @@ function sunburstVis(slice) {
       const g = legend.selectAll('g')
           .data(d3.entries(colors))
           .enter().append('svg:g')
-          .attr('transform', function(d, i) {
+          .attr('transform', function (d, i) {
                   return 'translate(0,' + i * (li.h + li.s) + ')';
                });
 
@@ -263,14 +263,14 @@ function sunburstVis(slice) {
           .attr('ry', li.r)
           .attr('width', li.w)
           .attr('height', li.h)
-          .style('fill', function(d) { return d.value; });
+          .style('fill', function (d) { return d.value; });
 
       g.append('svg:text')
           .attr('x', li.w / 2)
           .attr('y', li.h / 2)
           .attr('dy', '0.35em')
           .attr('text-anchor', 'middle')
-          .text(function(d) { return d.key; });
+          .text(function (d) { return d.key; });
     }
 
     function toggleLegend() {
@@ -296,14 +296,14 @@ function sunburstVis(slice) {
         }
         const parts = sequence.split('-');
         let currentNode = root;
-        for (var j = 0; j < parts.length; j++) {
+        for (let j = 0; j < parts.length; j++) {
           let children = currentNode['children'];
           let nodeName = parts[j];
           let childNode;
           if (j + 1 < parts.length) {
        // Not yet at the end of the sequence; move down the tree.
      	const foundChild = false;
-     	for (var k = 0; k < children.length; k++) {
+     	for (let k = 0; k < children.length; k++) {
      	  if (children[k]['name'] == nodeName) {
      	    childNode = children[k];
      	    foundChild = true;
