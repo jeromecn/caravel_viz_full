@@ -32,7 +32,7 @@ function sunburstVis(slice) {
     // Dimensions of sunburst.
     const width = visWidth;
     const height = visHeight;
-    const radius = Math.min(width, height) / 2;
+    //const radius = Math.min(width, height) / 2;
 
     // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
     const b = {
